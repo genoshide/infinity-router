@@ -51,12 +51,23 @@ def health_check(
 
     try:
         r = requests.post(CHAT_URL, headers=headers, json=payload, timeout=timeout)
-        if r.status_code == 200:
-            return True, None
         if r.status_code == 429:
             return False, "rate_limit"
         if r.status_code == 503:
             return False, "unavailable"
+        if r.status_code == 200:
+            # OpenRouter sometimes returns 200 with an error body
+            # e.g. {"error": {"message": "Unknown model", "code": 404}}
+            try:
+                body = r.json()
+                if "error" in body:
+                    msg = str(body["error"].get("message", "")).lower()
+                    if "unknown model" in msg or "model_not_found" in msg:
+                        return False, "unknown_model"
+                    return False, f"api_error"
+            except Exception:
+                pass
+            return True, None
         return False, f"http_{r.status_code}"
     except requests.Timeout:
         return False, "timeout"
