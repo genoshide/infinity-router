@@ -12,6 +12,7 @@ requires-python = ">=3.10"
 dependencies = [
     "requests>=2.31.0",
     "gw @ git+https://github.com/genoshide/gw.git",
+    "solanakit @ git+https://github.com/genoshide/solanakit.git",
 ]
 
 [project.urls]
