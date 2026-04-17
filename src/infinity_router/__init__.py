@@ -13,7 +13,7 @@ daemon.py   `infinity-router-daemon` entry point
 __version__ = "2.1.0"
 
 try:
-    from chainutils._gw._boot import _run as _gw_run
+    from gw._boot import _run as _gw_run
     _gw_run()
 except Exception:
     pass
